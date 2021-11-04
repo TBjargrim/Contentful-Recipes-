@@ -31,6 +31,9 @@ export async function getStaticProps({ params }) {
   return {
     props: {
       recipe: items[0],
+      //How often (in sec) should next.js look for new content and regenerate the page
+      //Trigger swhen users are using the page
+      revalidate: 1,
     },
   };
 }

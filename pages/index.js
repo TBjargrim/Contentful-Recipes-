@@ -10,6 +10,7 @@ export async function getStaticProps() {
   return {
     props: {
       recipes: res.items,
+      revalidate: 1,
     },
   };
 }
@@ -20,7 +21,6 @@ export default function Recipes({ recipes }) {
       {recipes.map((recipe) => (
         <RecipeCard key={recipe.sys.id} recipe={recipe} />
       ))}
-
       <style jsx>{`
         .recipe-list {
           display: grid;
