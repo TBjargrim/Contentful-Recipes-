@@ -1,6 +1,7 @@
 import { createClient } from "contentful";
 import Image from "next/image";
 import { documentToReactComponents } from "@contentful/rich-text-react-renderer";
+import Skeleton from "../../components/Skeleton";
 
 const client = createClient({
   space: process.env.CONTENTFUL_SPACE_ID,
@@ -19,7 +20,7 @@ export const getStaticPaths = async () => {
   });
   return {
     paths: paths,
-    fallback: false,
+    fallback: true,
   };
 };
 
@@ -28,17 +29,33 @@ export async function getStaticProps({ params }) {
     content_type: "recipe",
     "fields.slug": params.slug,
   });
+
+  if (!items.length) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
   return {
     props: {
       recipe: items[0],
-      //How often (in sec) should next.js look for new content and regenerate the page
-      //Trigger swhen users are using the page
+      //How often (in sec) should next.js look for new content and regenerate the page?
+      //Triggers when users are using the page
       revalidate: 1,
     },
   };
 }
 
 export default function RecipeDetails({ recipe }) {
+  if (!recipe)
+    return (
+      <div>
+        <Skeleton />
+      </div>
+    );
+
   const { featuredImage, title, cookingTime, ingredients, method } =
     recipe.fields;
   console.log(recipe);
